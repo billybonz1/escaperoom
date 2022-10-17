@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Page</title>
+	<link rel="stylesheet" href="css/vendor.css">
+	<link rel="stylesheet" href="css/main.css">
+</head>
+
+<!-- <svg>
+    <use xlink:href="img/sprite.svg#telega"></use>
+</svg> -->
+
+<body>
+	<div class="page">
+		<header class="header">
+			<div class="header__logo">
+				<img src="img/logo.png" alt="">
+				<span>The Einsteins</span>
+			</div>
+
+			<div class="number">
+				<span class="number__text">Ruimte</span>
+				<button class="number__btn number__btn--one">A</button>
+				<button class="number__btn number__btn--two">B</button>
+				<button class="number__btn number__btn--three">C</button>
+			</div>
+
+			<div class="header__nav">
+				<time class="timer">02:12:55</time>
+				<a class="escape" href="#">
+					<img src="img/escape.png" alt="">
+					Escape
+				</a>
+			</div>
+		</header>
+
+		<img class="background" src="img/img.png" alt="">
+
+		<div class="item" style="width:100px; height:100px; left: 32%; bottom: 29%"></div>
+		<div class="item" style="width:175px; height:100px; left: 41%; bottom: 27%; transform: rotate(15deg);"></div>
+		<div class="item" style="width:120px; height:225px; right: 0%; bottom: 18%; "></div>
+
+		<div class="nav">
+			<button class="nav__btn nav__btn--one">
+				<img src="img/icon-1.png" alt="">
+			</button>
+			<button class="nav__btn nav__btn--two">
+				<img src="img/icon-2.png" alt="">
+			</button>
+			<button class="nav__btn nav__btn--three">
+				<img src="img/icon-2.png" alt="">
+			</button>
+			<button class="nav__btn nav__btn--four">
+				<img src="img/icon-3.png" alt="">
+			</button>
+		</div>
+	</div>
+
+	<div class="popup" id="editor">
+		<div class="popup__inner">
+			<button class="popup__btn">X</button>
+			<div class="editor__img">
+				<img src="img/editor.png" alt="">
+			</div>
+			<h2 class="editor__title">HTML editor</h2>
+			<p class="editor__text">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+			</p>
+			<p class="editor__descr">
+				<span>Option to add and manipulate the folwing items</span>
+				TEXT<br>
+				VIDEO EMBED<br>
+				AUDIO EMBED<br>
+				IMAGES<br>
+			</p>
+		</div>
+	</div>
+
+	<div class="popup" id="puzzle">
+		<div class="popup__inner">
+			<button class="popup__btn">X</button>
+			<div class="puzzle__img">
+				<img src="img/puzzle.png" alt="">
+			</div>
+
+			<h2 class="puzzle__title">Los de puzzel op</h2>
+			<p class="puzzle__text">Let op een verkeerde antwoord kost je 2 minuten!</p>
+
+			<form class="puzzle__form" action="">
+				<div class="puzzle__wrapper">
+					<input class="puzzle__input" type="text">
+					<input class="puzzle__input" type="text">
+					<input class="puzzle__input" type="text">
+					<input class="puzzle__input" type="text">
+					<input class="puzzle__input" type="text">
+					<input class="puzzle__input" type="text">
+					<input class="puzzle__input" type="text">
+				</div>
+				<button class="puzzle__btn btn btn--red" type="submit">OPLOSSEN</button>
+			</form>
+		</div>
+	</div>
+
+	<div class="popup" id="congrat">
+		<div class="popup__inner">
+			<button class="popup__btn">X</button>
+			<div class="congratulations__img">
+				<img src="img/congratulations.png" alt="">
+			</div>
+			<h2 class="congratulations__title">Congratulations!!</h2>
+			<ul class="congratulations__list">
+				<li class="congratulations__item">
+					Your time:
+					<span>01:12:05</span>
+				</li>
+				<li class="congratulations__item">
+					Your placing:
+					<span>27</span>
+				</li>
+				<li class="congratulations__item">
+					Best score:
+					<span>0:49:54 </span>
+				</li>
+
+			</ul>
+			<p class="congratulations__text">
+				Thank you for playing the game. We hope you enjoyed playing the game and have learned more about the work ur charity offers. Please support us in any way you can. Either by donating or sharing the game with your friends and family
+			</p>
+			<div class="congratulations__nav">
+				<a class="btn btn--dark" href="">SHARE GAME</a>
+				<a class="btn" href="">DONATE</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="popup" id="answers">
+		<div class="popup__inner popup__inner--answers">
+			<button class="popup__btn">X</button>
+			<div class="answers__img">
+				<img src="img/answers.png" alt="">
+			</div>
+			<h2 class="answers__title">Vull alle antwoorden in en ontsnap!</h2>
+			<p class="answers__descr">
+				Let op een verkeerde antwoord kost je 5 minuten!
+				Je kan tussentijds je antworden ten alle tijden opslaan.
+			</p>
+			<form action="">
+				<ul class="answers__list">
+					<li class="answers__group">
+						<input class="answers__input" type="text" placeholder="Naam">
+						<input class="answers__input" type="text" placeholder="Geboorteplaats">
+						<input class="answers__input" type="text" placeholder="Geboortejaar">
+						<input class="answers__input" type="text" placeholder="Opleiding">
+					</li>
+					<li class="answers__group">
+						<input class="answers__input" type="text" placeholder="Naam">
+						<input class="answers__input" type="text" placeholder="Geboorteplaats">
+						<input class="answers__input" type="text" placeholder="Geboortejaar">
+						<input class="answers__input" type="text" placeholder="Opleiding">
+					</li>
+					<li class="answers__group">
+						<input class="answers__input" type="text" placeholder="Naam">
+						<input class="answers__input" type="text" placeholder="Geboorteplaats">
+						<input class="answers__input" type="text" placeholder="Geboortejaar">
+						<input class="answers__input" type="text" placeholder="Opleiding">
+					</li>
+					<li class="answers__group">
+						<input class="answers__input" type="text" placeholder="Naam">
+						<input class="answers__input" type="text" placeholder="Geboorteplaats">
+						<input class="answers__input" type="text" placeholder="Geboortejaar">
+						<input class="answers__input" type="text" placeholder="Opleiding">
+					</li>
+				</ul>
+				<div class="answers__nav">
+					<button class="btn btn--dark">OPSLAAN</button>
+					<button class="btn">ONTSNAP</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="js/vendor.js"></script>
+	<script src="js/main.js"></script>
+</body>
+
+</html>

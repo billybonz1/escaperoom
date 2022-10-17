@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Escape Room</title>
+    <link rel="stylesheet" href="../css/vendor.css">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<div id="app">
+    <div :class="{page: true, page_room: currentRoute && currentRoute === 'room11'}">
+        <div :class="{container: $store.state.currentUser === null}">
+            <div class="top-nav" v-if="$store.state.currentUser === null">
+                <router-link class="link" to="/">Home</router-link>
+                <router-link class="link" to="/high-score">Highscore</router-link>
+            </div>
+            <header v-if="$store.state.currentUser !== null" class="header">
+                <div class="header__logo">
+                    <img src="../img/logo.png" alt="">
+                    <span>The Einsteins</span>
+                </div>
+
+                <div class="number">
+                    <span class="number__text">Ruimte</span>
+                    <router-link v-for="(room, roomKey) in $store.state.roomsData.rooms" :class="{number__btn: true, 'number__btn--yellow': $store.state.currentUser[roomKey].status === 'opened', 'number__btn--green': $store.state.currentUser[roomKey].status === 'solved', hide: $store.state.currentUser[roomKey].status === 'locked'}" :to="'/' + Object.keys(room.inner_rooms)[0]">
+                      {{ room.name }}
+                    </router-link>
+                    <div v-for="(room, roomKey) in $store.state.roomsData.rooms" :class="{number__btn: true, 'number__btn--red': true, hide: $store.state.currentUser[roomKey].status !== 'locked'}">
+                      {{ room.name }}
+                    </div>
+                </div>
+
+                <div class="header__nav">
+                    <time class="timer">{{ timer }}</time>
+                    <div style="cursor: pointer;" v-if="$store.state.roomsData.popups.answers" @click="$root.setActiveDataBlock($store.state.roomsData.popups.answers, 'answers')" class="escape">
+                        <img src="../img/escape.png" alt="">
+                        Escape
+                    </div>
+                </div>
+            </header>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+<script src="vue.total.js"></script>
+<script>
+    const currentRouteMixin = {
+        mounted() {
+            let currentUser = this.$store.state.currentUser
+            if(currentUser === null && this.$root.currentRoute !== 'high-score'){
+                this.$router.push('/')
+            }
+            if(currentUser !== null && currentUser.timestamp && this.$root.currentRoute.indexOf('room') === -1){
+                this.$router.push('/room11')
+            }
+        }
+    }
+    const rulesPopup = {
+      template: `
+            <ol class="rules__list">
+                <li>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </li>
+                <li>
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco labor
+                </li>
+                <li>
+                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariat
+                </li>
+                <li>
+                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+                </li>
+            </ol>
+            <a class="btn" @click="$root.closePopup()">Ga verder</a>
+      `
+    }
+    const editorPopup = {
+      methods:{
+        goToReward(){
+          let roomKey = this.$root.currentRoute.substring(0,5)
+          this.$root.setActiveDataBlock(this.$store.state.roomsData.rooms[roomKey].reward_popup)
+        },
+        confirmHint(){
+          let hintIndex = parseInt(this.$root.currentPopup.replace( /^\D+/g, ''));
+          let roomKey = this.$root.currentRoute.substring(0,5)
+          let u = this.$store.state.currentUser
+          u[roomKey].hints[hintIndex].status = "opened"
+          u.timestamp -= 120*1000
+          this.$store.commit('setCurrentUser', u)
+          this.$root.setActiveDataBlock(this.$store.state.roomsData.rooms[roomKey].hints[hintIndex])
+        }
+      },
+      template: `
+          <p class="editor__text">{{ $store.state.activeDataBlock.text }}</p>
+          <p class="editor__descr" v-html="$store.state.activeDataBlock.desc"></p>
+          <button v-if="$root.currentPopup === 'right_password'" @click="goToReward()" class="btn">Reward</button>
+          <button v-if="$root.currentPopup.indexOf('confirm') > -1" @click="confirmHint()" class="btn">Confirm</button>
+      `
+    }
+    const congratPopup = {
+      template: `
+          <ul class="congratulations__list">
+            <li class="congratulations__item">
+              Your time:
+              <span>{{ $store.state.currentUser.timer }}</span>
+            </li>
+            <li class="congratulations__item">
+              Your placing:
+              <span>27</span>
+            </li>
+            <li class="congratulations__item">
+              Best score:
+              <span>0:49:54 </span>
+            </li>
+          </ul>
+          <p class="congratulations__text">{{ $store.state.activeDataBlock.text }}</p>
+          <div class="congratulations__nav">
+            <a class="btn btn--dark" href="">SHARE GAME</a>
+            <a class="btn" href="">DONATE</a>
+          </div>
+      `
+    }
+    const puzzlePopup = {
+      methods: {
+        puzzleInput(e){
+          if(e.target.value.length > 1) e.target.value = Array.from(e.target.value)[0]
+          if(e.target.nextElementSibling && e.target.nextElementSibling.tagName === 'INPUT' && e.code !== 'Backspace'){
+            e.target.nextElementSibling.focus()
+          }
+          if(e.code === 'Backspace' && e.target.value === '' && e.target.previousElementSibling && e.target.previousElementSibling.tagName === 'INPUT'){
+            e.target.previousElementSibling.value = ''
+            e.target.previousElementSibling.focus()
+          }
+        },
+        checkPassword(e){
+          e.preventDefault()
+          let checkingPass = ''
+          document.querySelectorAll('.puzzle__input').forEach((input, i) => {
+            checkingPass += input.value
+          })
+          let roomKey = this.$root.currentRoute.substring(0,5)
+          let u = this.$store.state.currentUser
+          if(checkingPass === this.$store.state.roomsData.rooms[roomKey].correct_password){
+              u[roomKey].status = 'solved'
+              let newRoomKey = 'room' + (parseInt(roomKey.replace( /^\D+/g, '')) + 1)
+              if(u[newRoomKey]) u[newRoomKey].status = 'opened'
+              this.$root.setActiveDataBlock(this.$store.state.roomsData.popups.right_password, "right_password")
+          }else{
+              u.timestamp -= 120*1000
+              this.$root.setActiveDataBlock(this.$store.state.roomsData.popups.wrong_password)
+          }
+          this.$store.commit('setCurrentUser', u)
+        }
+      },
+      template: `
+              <p class="puzzle__text">{{ $store.state.activeDataBlock.text }}</p>
+              <form class="puzzle__form" @submit="(e) => checkPassword(e)">
+                <div class="puzzle__wrapper">
+                  <input v-for="input in 7" class="puzzle__input" @keyup="(e) => puzzleInput(e)" type="text">
+                </div>
+                <button class="puzzle__btn btn btn--red" type="submit">OPLOSSEN</button>
+              </form>
+      `
+    }
+    const answersPopup = {
+      methods: {
+        saveAnswers(){
+          let answers = []
+          document.querySelectorAll(".answers__group").forEach((answerGroup, groupIndex) => {
+            answers.push([])
+            answerGroup.querySelectorAll("input").forEach((input, index) => {
+              answers[groupIndex].push(input.value)
+            })
+          })
+          let u = this.$store.state.currentUser
+          u.answers = answers
+          this.$store.commit("setCurrentUser", u)
+        },
+        setValue(groupIndex, index){
+          if(this.$store.state.currentUser.answers[groupIndex] && this.$store.state.currentUser.answers[groupIndex][index]){
+            return this.$store.state.currentUser.answers[groupIndex][index]
+          }else{
+            return ""
+          }
+        },
+        checkAnswers(){
+          this.saveAnswers()
+          let correctAnswersNumber = 0
+          let correctAnswers = 0
+          this.$store.state.roomsData.correct_answers.forEach((answerGroup, i) => {
+            answerGroup.forEach((answer, i) => {
+              correctAnswersNumber++
+            })
+          })
+
+          this.$store.state.roomsData.correct_answers.forEach((answerGroup, groupIndex) => {
+            answerGroup.forEach((answer, index) => {
+              if(this.$store.state.currentUser.answers[groupIndex][index].toLowerCase() == answer.toLowerCase()) correctAnswers++
+            })
+          })
+
+          if(correctAnswersNumber === correctAnswers){
+            this.$root.youWin()
+          }else{
+            let u = this.$store.state.currentUser
+            u.timestamp -= 120*1000
+            this.$store.commit("setCurrentUser", u)
+            this.$root.setActiveDataBlock(this.$store.state.roomsData.popups.wrong_password)
+            setTimeout(() => {
+              this.$root.setActiveDataBlock(this.$store.state.roomsData.popups.answers, 'answers-errors')
+            }, 2000)
+          }
+        },
+        showInputError(groupIndex, index){
+          return this.$root.currentPopup === 'answers-errors' && this.$store.state.roomsData.correct_answers[groupIndex][index] != this.$store.state.currentUser.answers[groupIndex][index]
+        }
+      },
+      template: `
+            <p class="answers__descr" v-html="$store.state.activeDataBlock.desc"></p>
+            <form>
+              <ul class="answers__list">
+                <li v-for="(li, index) in 4" class="answers__group">
+                  <input :class="{answers__input: true, error: showInputError(index,0)}" type="text" placeholder="Naam" :value="setValue(index, 0)">
+                  <input :class="{answers__input: true, error: showInputError(index,1)}" type="text" placeholder="Geboorteplaats" :value="setValue(index, 1)">
+                  <input :class="{answers__input: true, error: showInputError(index,2)}" type="text" placeholder="Geboortejaar" :value="setValue(index, 2)">
+                  <input :class="{answers__input: true, error: showInputError(index,3)}" type="text" placeholder="Opleiding" :value="setValue(index, 3)">
+                </li>
+              </ul>
+              <div class="answers__nav">
+                <button class="btn btn--dark" @click="saveAnswers()">OPSLAAN</button>
+                <button class="btn" @click="checkAnswers()">ONTSNAP</button>
+              </div>
+            </form>
+      `
+    }
+    const Popup = {
+      components: {
+        rulesPopup, editorPopup, congratPopup, puzzlePopup, answersPopup
+      },
+      template: `
+        <div v-if="$root.currentPopup !== ''" :class="{popup: true, active: $root.currentPopup !== ''}" :id="$root.currentPopup">
+          <div :class="{popup__inner: true}">
+            <button v-if="$root.currentPopup !== 'rules'" @click="$root.closePopup()" class="popup__btn">X</button>
+            <div v-if="$store.state.activeDataBlock.image" class="editor__img">
+              <img :src="$store.state.activeDataBlock.image">
+            </div>
+            <h2 v-if="$store.state.activeDataBlock.title" class="editor__title">{{ $store.state.activeDataBlock.title }}</h2>
+            <editorPopup v-if="$root.currentPopup === 'editor' || $root.currentPopup === 'right_password' || $root.currentPopup.indexOf('confirm') > -1"/>
+            <rulesPopup v-if="$root.currentPopup === 'rules'"/>
+            <congratPopup v-if="$root.currentPopup === 'congrat'"/>
+            <puzzlePopup v-if="$root.currentPopup === 'puzzle'"/>
+            <answersPopup v-if="$root.currentPopup.indexOf('answers') > -1"/>
+          </div>
+        </div>
+      `
+    }
+    const Nav = {
+        components: {
+          Popup
+        },
+        methods:{
+          clickUnlockBtn(){
+            let roomKey = this.$root.currentRoute.substring(0,5)
+            if(this.$store.state.currentUser[roomKey].status === 'solved'){
+              this.$root.setActiveDataBlock(this.$store.state.roomsData.rooms[roomKey].reward_popup)
+            }else{
+              this.$root.setActiveDataBlock(this.$store.state.roomsData.popups.puzzle, 'puzzle')
+            }
+          },
+          unlockHint(hint, index){
+            let roomKey = this.$root.currentRoute.substring(0,5)
+            if(this.$store.state.currentUser[roomKey].hints[index].status === 'locked'){
+              this.$root.setActiveDataBlock(this.$store.state.roomsData.popups.confirm, 'confirm-hint' + index)
+            }else{
+              this.$root.setActiveDataBlock(hint)
+            }
+          },
+          checkActiveHint(hintIndex){
+            let roomKey = this.$root.currentRoute.substring(0,5)
+            return this.$store.state.currentUser[roomKey].hints[hintIndex].status !== 'locked'
+          }
+        },
+        template: `
+            <div class="nav">
+                <button v-if="$store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].general_info" @click="$root.setActiveDataBlock($store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].general_info)" class="nav__btn nav__btn--one">
+                    <img src="../img/icon-1.png" alt="">
+                </button>
+                <button v-for="(hint, index) in $store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].hints" @click="unlockHint(hint, index)" class="nav__btn nav__btn--two" :class="{active: checkActiveHint(index)}">
+                  <img src="../img/icon-2.png" alt="">
+                </button>
+                <button v-if="$store.state.roomsData.popups.puzzle" @click="clickUnlockBtn()" class="nav__btn nav__btn--four">
+                  <img src="../img/icon-3.png" alt="">
+                </button>
+            </div>
+            <Popup />
+        `
+    }
+    const Home = {
+        mixins: [currentRouteMixin],
+        template: `
+            <div class="register auth_content">
+                <div class="register__logo">
+                    <img src="../img/register-logo.png" alt="">
+                </div>
+                <h1 class="register__title">
+                    Welcome to the
+                    <span>Register below to get started</span>
+                </h1>
+                <form v-if="$store.state.currentUser === null || $store.state.currentUser === ''" @submit="(e) => registerUser(e)">
+                    <input class="input register__input" v-model="username" type="text" placeholder="Name">
+                    <input class="input register__input" v-model="email" type="text" placeholder="Email">
+                    <input class="input register__input" v-model="password" type="password" placeholder="Password">
+                    <button class="register__btn btn" type="submit">Ga verder</button>
+                </form>
+            </div>
+            <div class="scoreboard auth_content">
+                <div class="scoreboard__top">
+                    <h2 class="scoreboard__title">
+                        Scoreboard Top 3
+                    </h2>
+                    <router-link class="scoreboard__link" to="/high-score">View All</router-link>
+                </div>
+
+                <ul class="scoreboard__list">
+                    <li class="scoreboard__item">
+                        <div class="scoreboard__info">
+                            <span class="scoreboard__num">1</span>
+                            <b class="scoreboard__name">Name of the group</b>
+                            <span class="scoreboard__date">27 Nov 2020</span>
+                        </div>
+                        <time class="scoreboard__time">
+                            0:49:55
+                        </time>
+                    </li>
+                    <li class="scoreboard__item">
+                        <div class="scoreboard__info">
+                            <span class="scoreboard__num">2</span>
+                            <b class="scoreboard__name">Name of the group</b>
+                            <span class="scoreboard__date">27 Nov 2020</span>
+                        </div>
+                        <time class="scoreboard__time">
+                            0:49:55
+                        </time>
+                    </li>
+                    <li class="scoreboard__item">
+                        <div class="scoreboard__info">
+                            <span class="scoreboard__num">3</span>
+                            <b class="scoreboard__name">Name of the group</b>
+                            <span class="scoreboard__date">27 Nov 2020</span>
+                        </div>
+                        <time class="scoreboard__time">
+                            0:49:55
+                        </time>
+                    </li>
+                </ul>
+            </div>
+        `,
+        methods: {
+            registerUser(e){
+                e.preventDefault();
+                let u;
+                this.$store.state.users.forEach((user) => {
+                    if(user.username === this.username && user.email === this.email && user.password === this.password){
+                        u = user
+                    }
+                })
+
+                if(u){
+                    this.$store.commit('setCurrentUser', u)
+                }else{
+                    u = {
+                        username: this.username,
+                        email: this.email,
+                        password: this.password,
+                        gameStatus: "progress",
+                        answers: []
+                    }
+                    for (const [roomId, data] of Object.entries(this.$store.state.roomsData.rooms)) {
+                        let status = 'locked'
+                        if(roomId === 'room1') status = 'opened'
+                        u[roomId] = {
+                          status: status,
+                          hints: []
+                        }
+                        data.hints.forEach((hint) => {
+                          u[roomId].hints.push({
+                            status: "locked"
+                          })
+                        })
+                    }
+                    this.$store.commit('addNewUser', u)
+                }
+                this.$router.push('room11')
+            }
+        },
+        data() {
+            return {
+                username: '',
+                password: '',
+                email: ''
+            }
+        }
+    }
+    const HighScore = {
+        mixins: [currentRouteMixin],
+        template: `<div class="high-score auth_content">
+                <div class="high-score__logo">
+                    <img src="../img/high-score.png" alt="">
+                </div>
+                <h2 class="high-score__title">High score</h2>
+                <ul class="high-score__list">
+                    <li class="high-score__item">
+                        <div class="high-score__info">
+                            <span class="high-score__num">1</span>
+                            <b class="high-score__name">Name of the group</b>
+                            <span class="high-score__date">27 Nov 2020</span>
+                        </div>
+                        <time class="high-score__time">
+                            0:49:55
+                        </time>
+                    </li>
+                    <li class="high-score__item">
+                        <div class="high-score__info">
+                            <span class="high-score__num">2</span>
+                            <b class="high-score__name">Name of the group</b>
+                            <span class="high-score__date">27 Nov 2020</span>
+                        </div>
+                        <time class="high-score__time">
+                            0:49:55
+                        </time>
+                    </li>
+                    <li class="high-score__item">
+                        <div class="high-score__info">
+                            <span class="high-score__num">3</span>
+                            <b class="high-score__name">Name of the group</b>
+                            <span class="high-score__date">27 Nov 2020</span>
+                        </div>
+                        <time class="high-score__time">
+                            0:49:55
+                        </time>
+                    </li>
+                    <li class="high-score__item">
+                        <div class="high-score__info">
+                            <span class="high-score__num">4</span>
+                            <b class="high-score__name">Name of the group</b>
+                            <span class="high-score__date">27 Nov 2020</span>
+                        </div>
+                        <time class="high-score__time">
+                            0:49:55
+                        </time>
+                    </li>
+                    <li class="high-score__item">
+                        <div class="high-score__info">
+                            <span class="high-score__num">5</span>
+                            <b class="high-score__name">Name of the group</b>
+                            <span class="high-score__date">27 Nov 2020</span>
+                        </div>
+                        <time class="high-score__time">
+                            0:49:55
+                        </time>
+                    </li>
+                    <li class="high-score__item">
+                        <div class="high-score__info">
+                            <span class="high-score__num">6</span>
+                            <b class="high-score__name">Name of the group</b>
+                            <span class="high-score__date">27 Nov 2020</span>
+                        </div>
+                        <time class="high-score__time">
+                            0:49:55
+                        </time>
+                    </li>
+                </ul>
+
+                <button class="btn">Show More</button>
+            </div>`
+    }
+    const Rooms = {
+      data() {
+        return {
+          currentInnerRoom: {}
+        }
+      },
+      mixins: [currentRouteMixin],
+      components: {
+          Nav
+      },
+      mounted(){
+        this.currentInnerRoom = this.getCurrentInnerRoom()
+      },
+      methods: {
+        getCurrentInnerRoom(){
+          let findedRoom
+          for (const [roomId, data] of Object.entries(this.$store.state.roomsData.rooms)) {
+            for (const [innerRoomId, irData] of Object.entries(data.inner_rooms)) {
+              if(innerRoomId === this.$root.currentRoute) findedRoom = {id: innerRoomId, data: irData, parentRoom: roomId}
+            }
+          }
+          if(findedRoom){
+            let user = this.$store.state.currentUser
+
+            if(user[findedRoom.parentRoom].status === 'locked'){
+              this.$router.push('room11')
+            }
+
+            if(findedRoom.id === 'room11' && !user.rulesShowed){
+              user.rulesShowed = true
+              this.$store.commit('setCurrentUser', user)
+              this.$root.setActiveDataBlock(this.$store.state.roomsData.popups.rules, 'rules')
+            }
+            return findedRoom
+          }else{
+            this.$router.push('not-found')
+          }
+        }
+      },
+      watch: {
+        '$route' (to, from) {
+          this.currentInnerRoom = this.getCurrentInnerRoom()
+        }
+      },
+      template: `
+        <div>
+          <Nav/>
+          <div v-if="currentInnerRoom && currentInnerRoom.id && currentInnerRoom.data" class="background_holder">
+              <img class="background" :src="'../img/' + currentInnerRoom.data.imgFile" :alt="currentInnerRoom.id" id="room_img" />
+              <div v-for="(area, index) in currentInnerRoom.data.clickAreas" :key="currentInnerRoom.id + '_area' + index" @click='$root.setActiveDataBlock(area)' class="item" :style="area.style"></div>
+              <router-link v-for="(link, index) in currentInnerRoom.data.links" :key="currentInnerRoom.id + '_link' + index" class="item_link" :style="link.style" :to="link.route"></router-link>
+          </div>
+        </div>
+      `
+    }
+    const NotFound = {
+      template: `
+        <div>
+          <div class="background_holder">
+            <h2 style='text-align: center;padding: 40px 0;font-size: 35px;'>Page not found</h2>
+          </div>
+        </div>
+      `
+    }
+
+    const prepareAndRunApp = (json) => {
+      let routes = [
+          { path: '/', component: Home },
+          { path: '/high-score', component: HighScore },
+          { path: '/room:afterRoom(.*)', component: Rooms },
+          { path: '/not-found', component: NotFound }
+      ]
+
+      const router = VueRouter.createRouter({
+          // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
+          history: VueRouter.createWebHashHistory(),
+          routes
+      })
+
+      const store = Vuex.createStore({
+          state () {
+              return {
+                 users: [],
+                 currentUser: null,
+                 roomsData: {},
+                 activeDataBlock: {
+                     title: '',
+                     text: '',
+                     desc: ''
+                 }
+              }
+          },
+          mutations: {
+              addNewUser(state, userData){
+                  userData.timestamp = Date.now()
+                  state.users.push(userData)
+                  state.currentUser = userData
+                  localStorage.setItem('currentUser', JSON.stringify(state.currentUser))
+                  localStorage.setItem('users', JSON.stringify(state.users))
+              },
+              setCurrentUser(state, currentUser){
+                  state.currentUser = currentUser
+                  localStorage.setItem('currentUser', JSON.stringify(state.currentUser))
+                  let users = state.users
+                  users.forEach((user, i) => {
+                      if(user.username === currentUser.username && user.email === currentUser.email && user.password === currentUser.password){
+                          users[i] = currentUser
+                      }
+                  })
+                  state.users = users
+                  localStorage.setItem('users', JSON.stringify(state.users))
+
+              },
+              setUsers(state, users){
+                  state.users = users
+                  localStorage.setItem('users', JSON.stringify(state.users))
+              },
+              setRoomsData(state, data){
+                  state.roomsData = data
+              },
+              setActiveDataBlock(state, data){
+                  state.activeDataBlock = data
+              }
+          }
+      })
+      // 5. Create and mount the root instance.
+      const app = Vue.createApp({
+          mixins: [currentRouteMixin],
+          data(){
+              return {
+                  interval: null,
+                  timer: '00:00',
+                  currentRoute: window.location.hash.replace('#/', ''),
+                  currentPopup: ''
+              }
+          },
+          beforeMount(){
+              if(this.$store.state.currentUser !== null) this.$router.push('room11')
+              let currentUser = JSON.parse(localStorage.getItem('currentUser'))
+              let users = JSON.parse(localStorage.getItem('users'))
+              if(currentUser !== null && currentUser.timestamp){
+                  this.$store.commit('setCurrentUser', currentUser)
+              }
+              if(Array.isArray(users) && users.length > 0){
+                  this.$store.commit('setUsers', users)
+              }
+              this.timer = this.getTimerValue()
+
+              //set rooms data
+              this.$store.commit('setRoomsData', json)
+          },
+          methods: {
+              getTimerValue(){
+                  let currentUser = this.$store.state.currentUser
+                  if(currentUser !== null && currentUser.timestamp){
+                      let diff = Date.now() - currentUser.timestamp
+                      let hours = Math.floor(diff/1000/60/60)
+                      let minutes = hours === 0 ? Math.floor(diff/1000/60) : Math.floor((diff-(hours*1000*60*60))/1000/60)
+                      let seconds = Math.floor((diff - (hours*60*60*1000 + minutes*60*1000))/1000)
+                      if(hours<10) hours = '0' + hours
+                      if(minutes<10) minutes = '0' + minutes
+                      if(seconds<10) seconds = '0' + seconds
+                      return hours === '00' ? `${minutes}:${seconds}` : `${hours}:${minutes}:${seconds}`
+                  }else{
+                      return `00:00`
+                  }
+              },
+              showPopup(id) {
+                  this.currentPopup = id
+              },
+              closePopup(){
+                  this.currentPopup = ''
+              },
+              setActiveDataBlock(dataBlock, popup = 'editor'){
+                  this.$store.commit('setActiveDataBlock', dataBlock)
+                  this.showPopup(popup)
+              },
+              youWin(){
+                let u = this.$store.state.currentUser
+                u.gameStatus = "win"
+                u.timer = this.timer
+                clearInterval(this.interval)
+                this.$store.commit('setCurrentUser', u)
+                this.setActiveDataBlock(this.$store.state.roomsData.popups.congrat, 'congrat')
+              }
+          },
+          watch: {
+              '$route' (to, from) {
+                  if(this.$store.state.currentUser !== null && this.$store.state.currentUser.gameStatus === 'win'){
+                    clearInterval(this.interval)
+                    this.timer = this.$store.state.currentUser.timer
+                    this.setActiveDataBlock(this.$store.state.roomsData.popups.congrat, 'congrat')
+                  }else{
+                    if(this.$store.state.currentUser !== null && this.$store.state.currentUser.timestamp &&  document.querySelector('.timer')){
+                        clearInterval(this.interval)
+                        this.interval = setInterval(() => {
+                            let diff = Date.now() - this.$store.state.currentUser.timestamp
+                            let minutes = Math.floor(diff/1000/60)
+                            let seconds = Math.floor((diff - (minutes*60*1000))/1000)
+                            if(minutes<10) minutes = '0' + minutes
+                            if(seconds<10) seconds = '0' + seconds
+                            this.timer = this.getTimerValue()
+                        }, 1000)
+                    }
+                    this.currentRoute = to.href.replace('#/', '')
+                  }
+              }
+          }
+      })
+      // Make sure to _use_ the router instance to make the
+      // whole app router-aware.
+      app.use(router)
+      app.use(store)
+
+      app.mount('#app')
+    }
+
+    fetch("data.json").then(r => r.json()).then(json => {
+      prepareAndRunApp(json)
+    })
+</script>
+</body>
+</html>
