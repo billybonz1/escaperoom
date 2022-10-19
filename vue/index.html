@@ -87,10 +87,10 @@
           let hintIndex = parseInt(this.$root.currentPopup.replace( /^\D+/g, ''));
           let roomKey = this.$root.currentRoute.substring(0,5)
           let u = this.$store.state.currentUser
-          u[roomKey].hints[hintIndex].status = "opened"
+          u[roomKey].inner_rooms[this.$root.currentRoute].hints[hintIndex].status = "opened"
           u.timestamp -= 120*1000
           this.$store.commit('setCurrentUser', u)
-          this.$root.setActiveDataBlock(this.$store.state.roomsData.rooms[roomKey].hints[hintIndex])
+          this.$root.setActiveDataBlock(this.$store.state.roomsData.rooms[roomKey].inner_rooms[this.$root.currentRoute].hints[hintIndex])
         }
       },
       template: `
@@ -272,7 +272,7 @@
           },
           unlockHint(hint, index){
             let roomKey = this.$root.currentRoute.substring(0,5)
-            if(this.$store.state.currentUser[roomKey].hints[index].status === 'locked'){
+            if(this.$store.state.currentUser[roomKey].inner_rooms[this.$root.currentRoute].hints[index].status === 'locked'){
               this.$root.setActiveDataBlock(this.$store.state.roomsData.popups.confirm, 'confirm-hint' + index)
             }else{
               this.$root.setActiveDataBlock(hint)
@@ -280,18 +280,18 @@
           },
           checkActiveHint(hintIndex){
             let roomKey = this.$root.currentRoute.substring(0,5)
-            return this.$store.state.currentUser[roomKey].hints[hintIndex].status !== 'locked'
+            return this.$store.state.currentUser[roomKey].inner_rooms[this.$root.currentRoute].hints[hintIndex].status !== 'locked'
           }
         },
         template: `
             <div class="nav">
-                <button v-if="$store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].general_info" @click="$root.setActiveDataBlock($store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].general_info)" class="nav__btn nav__btn--one">
+                <button v-if="$store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].inner_rooms[$root.currentRoute].general_info" @click="$root.setActiveDataBlock($store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].inner_rooms[$root.currentRoute].general_info)" class="nav__btn nav__btn--one">
                     <img src="../img/icon-1.png" alt="">
                 </button>
-                <button v-for="(hint, index) in $store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].hints" @click="unlockHint(hint, index)" class="nav__btn nav__btn--two" :class="{active: checkActiveHint(index)}">
+                <button v-for="(hint, index) in $store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].inner_rooms[$root.currentRoute].hints" @click="unlockHint(hint, index)" class="nav__btn nav__btn--two" :class="{active: checkActiveHint(index)}">
                   <img src="../img/icon-2.png" alt="">
                 </button>
-                <button v-if="$store.state.roomsData.popups.puzzle" @click="clickUnlockBtn()" class="nav__btn nav__btn--four">
+                <button v-if="$store.state.roomsData.rooms[$root.currentRoute.substring(0,5)].inner_rooms[$root.currentRoute].unlockBtn" @click="clickUnlockBtn()" class="nav__btn nav__btn--four" :class="{solved: $store.state.currentUser[$root.currentRoute.substring(0,5)].status === 'solved'}">
                   <img src="../img/icon-3.png" alt="">
                 </button>
             </div>
@@ -383,13 +383,20 @@
                         if(roomId === 'room1') status = 'opened'
                         u[roomId] = {
                           status: status,
-                          hints: []
+                          inner_rooms: {}
                         }
-                        data.hints.forEach((hint) => {
-                          u[roomId].hints.push({
-                            status: "locked"
+                        for (const [innerRoomId, innerRoomData] of Object.entries(data.inner_rooms)) {
+                          if(!u[roomId].inner_rooms[innerRoomId]){
+                            u[roomId].inner_rooms[innerRoomId] = {
+                              hints: []
+                            }
+                          }
+                          innerRoomData.hints.forEach((hint) => {
+                            u[roomId].inner_rooms[innerRoomId].hints.push({
+                              status: "locked"
+                            })
                           })
-                        })
+                        }
                     }
                     this.$store.commit('addNewUser', u)
                 }

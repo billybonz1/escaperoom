@@ -168,6 +168,9 @@ body {
   border-radius: 5px;
   transition: 0.2s linear;
 }
+.nav__btn.solved{
+  background: green;
+}
 @media (any-hover: hover) {
   .nav__btn:hover {
     transform: scale(1.1);

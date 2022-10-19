@@ -27,7 +27,28 @@
               "style": "width:16%; height:50%; right: 0%; bottom: 0%;",
               "route": "/room12"
             }
-          ]
+          ],
+          "unlockBtn": false,
+          "hints":[
+            {
+              "title": "Room11 Hint 1",
+              "text": "Text 1",
+              "description": "Description 1",
+              "image": "../img/editor.png"
+            },
+            {
+              "title": "Room 11 Hint 2",
+              "text": "Text 2",
+              "description": "Description 2",
+              "image": "../img/editor.png"
+            }
+          ],
+          "general_info": {
+            "title": "General info Room 11",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            "desc": "<span>Option to add and manipulate the folwing items</span>TEXT<br>VIDEO EMBED<br>AUDIO EMBED<br>                  IMAGES<br>",
+            "image": "../img/editor.png"
+          }
         },
         "room12": {
           "clickAreas": [
@@ -74,7 +95,28 @@
               "style": "width:14%; height:35%; left: 0%; bottom: 0%;",
               "route": "/room11"
             }
-          ]
+          ],
+          "unlockBtn": false,
+          "hints":[
+            {
+              "title": "Room 12 Hint 1",
+              "text": "Text 1",
+              "description": "Description 1",
+              "image": "../img/editor.png"
+            },
+            {
+              "title": "Room 12 Hint 2",
+              "text": "Text 2",
+              "description": "Description 2",
+              "image": "../img/editor.png"
+            }
+          ],
+          "general_info": {
+            "title": "General info Room 12",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            "desc": "<span>Option to add and manipulate the folwing items</span>TEXT<br>VIDEO EMBED<br>AUDIO EMBED<br>                  IMAGES<br>",
+            "image": "../img/editor.png"
+          }
         },
         "room13": {
           "clickAreas": [],
@@ -84,7 +126,28 @@
               "style": "width:14%; height:35%; left: 0%; bottom: 0%;",
               "route": "/room12"
             }
-          ]
+          ],
+          "unlockBtn": true,
+          "hints":[
+            {
+              "title": "Room 13 Hint 1",
+              "text": "Text 1",
+              "description": "Description 1",
+              "image": "../img/editor.png"
+            },
+            {
+              "title": "Room 13 Hint 2",
+              "text": "Text 2",
+              "description": "Description 2",
+              "image": "../img/editor.png"
+            }
+          ],
+          "general_info": {
+            "title": "General info Room 13",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            "desc": "<span>Option to add and manipulate the folwing items</span>TEXT<br>VIDEO EMBED<br>AUDIO EMBED<br>                  IMAGES<br>",
+            "image": "../img/editor.png"
+          }
         }
       },
       "name": "A",
@@ -92,26 +155,6 @@
       "reward_popup": {
         "title": "Reward Popup Room 1",
         "text": "Reward Popup Room 1 text"
-      },
-      "hints":[
-        {
-          "title": "Hint 1",
-          "text": "Text 1",
-          "description": "Description 1",
-          "image": "../img/editor.png"
-        },
-        {
-          "title": "Hint 2",
-          "text": "Text 2",
-          "description": "Description 2",
-          "image": "../img/editor.png"
-        }
-      ],
-      "general_info": {
-        "title": "General info Room 1",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-        "desc": "<span>Option to add and manipulate the folwing items</span>TEXT<br>VIDEO EMBED<br>AUDIO EMBED<br>                  IMAGES<br>",
-        "image": "../img/editor.png"
       }
     },
     "room2": {
@@ -131,9 +174,30 @@
           "links": [
             {
               "style": "width:16%;height:40%;left:0%;bottom:0%;",
-              "route": "/room1-1"
+              "route": "/room2-2"
             }
-          ]
+          ],
+          "unlockBtn": false,
+          "hints":[
+            {
+              "title": "Room21 Hint 1",
+              "text": "Text 1",
+              "description": "Description 1",
+              "image": "../img/editor.png"
+            },
+            {
+              "title": "Room 21 Hint 2",
+              "text": "Text 2",
+              "description": "Description 2",
+              "image": "../img/editor.png"
+            }
+          ],
+          "general_info": {
+            "title": "General info Room 21",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            "desc": "<span>Option to add and manipulate the folwing items</span>TEXT<br>VIDEO EMBED<br>AUDIO EMBED<br>                  IMAGES<br>",
+            "image": "../img/editor.png"
+          }
         },
         "room22": {
           "clickAreas": [
@@ -160,7 +224,28 @@
               "style": "width:16%; height:30%; right: 0%; bottom: 0%;",
               "route": "/room21"
             }
-          ]
+          ],
+          "unlockBtn": true,
+          "hints":[
+            {
+              "title": "Room 22 Hint 1",
+              "text": "Text 1",
+              "description": "Description 1",
+              "image": "../img/editor.png"
+            },
+            {
+              "title": "Room 22 Hint 2",
+              "text": "Text 2",
+              "description": "Description 2",
+              "image": "../img/editor.png"
+            }
+          ],
+          "general_info": {
+            "title": "General info Room 22",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            "desc": "<span>Option to add and manipulate the folwing items</span>TEXT<br>VIDEO EMBED<br>AUDIO EMBED<br>                  IMAGES<br>",
+            "image": "../img/editor.png"
+          }
         }
       },
       "name": "B",
@@ -168,20 +253,6 @@
       "reward_popup": {
         "title": "Reward Popup Room 2",
         "text": "Reward Popup Room 2 text"
-      },
-      "hints":[
-        {
-          "title": "Hint 1",
-          "text": "Text 1",
-          "description": "Description 1",
-          "image": "../img/editor.png"
-        }
-      ],
-      "general_info": {
-        "title": "General info Room 2",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-        "desc": "<span>Option to add and manipulate the folwing items</span>TEXT<br>VIDEO EMBED<br>AUDIO EMBED<br>                  IMAGES<br>",
-        "image": "../img/editor.png"
       }
     },
     "room3":{
@@ -189,7 +260,28 @@
         "room31": {
           "clickAreas": [],
           "imgFile": "3.1.jpg",
-          "links": []
+          "links": [],
+          "unlockBtn": true,
+          "hints":[
+            {
+              "title": "Room 31 Hint 1",
+              "text": "Text 1",
+              "description": "Description 1",
+              "image": "../img/editor.png"
+            },
+            {
+              "title": "Room 31 Hint 2",
+              "text": "Text 2",
+              "description": "Description 2",
+              "image": "../img/editor.png"
+            }
+          ],
+          "general_info": {
+            "title": "General info Room 31",
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            "desc": "<span>Option to add and manipulate the folwing items</span>TEXT<br>VIDEO EMBED<br>AUDIO EMBED<br>                  IMAGES<br>",
+            "image": "../img/editor.png"
+          }
         }
       },
       "name": "C",
@@ -197,20 +289,6 @@
       "reward_popup": {
         "title": "Reward Popup Room 3",
         "text": "Reward Popup Room 3 text"
-      },
-      "hints":[
-        {
-          "title": "Hint 1",
-          "text": "Text 1",
-          "description": "Description 1",
-          "image": "../img/editor.png"
-        }
-      ],
-      "general_info": {
-        "title": "General info Room 3",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-        "desc": "<span>Option to add and manipulate the folwing items</span>TEXT<br>VIDEO EMBED<br>AUDIO EMBED<br>                  IMAGES<br>",
-        "image": "../img/editor.png"
       }
     }
   },
