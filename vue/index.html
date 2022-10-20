@@ -127,7 +127,7 @@
       methods: {
         puzzleInput(e){
           if(e.target.value.length > 1) e.target.value = Array.from(e.target.value)[0]
-          if(e.target.nextElementSibling && e.target.nextElementSibling.tagName === 'INPUT' && e.code !== 'Backspace'){
+          if(e.target.value !== '' && e.target.nextElementSibling && e.target.nextElementSibling.tagName === 'INPUT' && e.code !== 'Backspace'){
             e.target.nextElementSibling.focus()
           }
           if(e.code === 'Backspace' && e.target.value === '' && e.target.previousElementSibling && e.target.previousElementSibling.tagName === 'INPUT'){
